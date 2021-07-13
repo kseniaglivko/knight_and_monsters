@@ -9,6 +9,7 @@
 
 from random import randint, choice
 from time import sleep
+import sys
 
 
 monster_counter = 0
@@ -19,9 +20,8 @@ attack = 10
 def game() -> None:
     """Главная функция, запускающая игру и выбирающая то, что произойдет с героем, из всех возможных вариантов."""
     global monster_counter
-    if monster_counter == 10:
-        print("ПОБЕДА! Вы спасли королевство от нападения чудовищ! :)")
-        quit()
+    if monster_counter >= 10:
+        sys.exit("ПОБЕДА! Вы спасли королевство от нападения чудовищ! :)")
     else:
         random_action_selector = [attacking_monsters, eating_apple, finding_sword]
         random_function = choice(random_action_selector)
@@ -33,9 +33,7 @@ def attacking_monsters() -> None:
     monster_hp = randint(5, 35)
     monster_attack = randint(4, 20)
     print(
-        f"Начинается БОЙ! "
         f"Вы встретили чудовище с {monster_hp} жизнями и с силой удара {monster_attack}."
-        "\nВведите 1, чтобы атаковать чудовище, 2 - чтобы убежать и восстановить силы."
     )
     gamer_reaction_to_monster(hp, monster_hp, monster_attack)
 
@@ -44,15 +42,16 @@ def gamer_reaction_to_monster(hp: int, monster_hp: int, monster_attack: int) -> 
     """Функция, с помощью которой непосредственно реализуется бой с монстром."""
     global attack
     global monster_counter
-    reaction = input()
+    reaction = input(
+        "БОЙ! Введите 1, чтобы атаковать чудовище, 2 - чтобы убежать и восстановить силы: "
+    )
     if reaction == "1":
         print("Атака!")
         sleep(0.5)
         updated_hp = hp - monster_attack
         updated_monster_hp = monster_hp - attack
         if updated_hp <= 0:
-            print("ПОРАЖЕНИЕ! Вы умерли :(")
-            quit()
+            sys.exit("ПОРАЖЕНИЕ! Вы умерли :(")
         elif updated_monster_hp <= 0:
             print(
                 "Вы победили чудовище! Отдохнув и восстановив силы, вы идете дальше..."
@@ -64,13 +63,16 @@ def gamer_reaction_to_monster(hp: int, monster_hp: int, monster_attack: int) -> 
         else:
             print(
                 f"Количество ваших жизней: {updated_hp}, количество жизней чудовища: {updated_monster_hp}."
-                "\nВведите 1, чтобы атаковать чудовище, 2 - чтобы убежать и восстановить силы."
             )
             gamer_reaction_to_monster(updated_hp, updated_monster_hp, monster_attack)
     elif reaction == "2":
         print("Побег! Вы отдыхаете, восстанавливаете силы и двигаетесь дальше...")
         sleep(2)
         game()
+    elif reaction == "\n":
+        print(
+            "Некорректный ввод! Введите 1, чтобы атаковать чудовище, 2 - чтобы убежать и восстановить силы."
+        )
     else:
         print(
             "Некорректный ввод! Введите 1, чтобы атаковать чудовище, 2 - чтобы убежать и восстановить силы."
@@ -98,9 +100,7 @@ def finding_sword() -> None:
     global attack
     sword = randint(11, 20)
     print(
-        f"Вы нашли МЕЧ! "
-        f"Сила нового меча - {sword}, а сила вашего меча - {attack}."
-        "\nВведите 1, чтобы взять новый меч и выкинуть старый, 2 - чтобы пройти мимо."
+        f"Вы нашли МЕЧ! " f"Сила нового меча - {sword}, а сила вашего меча - {attack}."
     )
     gamer_reaction_to_sword(sword)
 
@@ -108,7 +108,9 @@ def finding_sword() -> None:
 def gamer_reaction_to_sword(sword: int) -> None:
     """Функция, с помощью которой герой может непосредственно взять меч или пройти мимо."""
     global attack
-    reaction = input()
+    reaction = input(
+        "МЕЧ! Введите 1, чтобы взять новый меч и выкинуть старый, 2 - чтобы пройти мимо: "
+    )
     if reaction == "1":
         attack = sword
         print(
@@ -120,6 +122,10 @@ def gamer_reaction_to_sword(sword: int) -> None:
         print("Вы прошли мимо меча. Ну и ладно! Идем дальше...")
         sleep(1.5)
         game()
+    elif reaction == "\n":
+        print(
+            "Некорректный ввод! Введите 1, чтобы взять новый меч и выкинуть старый, 2 - чтобы пройти мимо."
+        )
     else:
         print(
             "Некорректный ввод! Введите 1, чтобы взять новый меч и выкинуть старый, 2 - чтобы пройти мимо."
